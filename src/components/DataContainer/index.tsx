@@ -17,6 +17,8 @@ const DataContainer = ({ data }: DataContainerProps) => {
     .filter((dataEntry) => dataEntry['parent_id'] === 0)
     .map((dataEntry) => resultTrees.get(dataEntry['id']));
 
+  console.log('treeroots', treeRoots, 'resultTrees', resultTrees);
+
   let string = '';
   const renderString = (tree: TData, level: number) => {
     const dashes = level > 0 ? '-'.repeat(level) : '';

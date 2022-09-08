@@ -2,7 +2,7 @@ import './App.css';
 import useAxios from 'axios-hooks';
 import { ErrorBoundary } from 'react-error-boundary';
 import SearchContainer from './components/SearchContainer';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import DataContainer from './components/DataContainer';
 import ErrorMessage from './components/ErrorMessage';
 import NoResult from './components/NoResult';
@@ -20,9 +20,14 @@ function App() {
     }
   );
 
+  const [searchValue, setSearchValue] = useState('');
+
+  const errorTime = useRef(0);
+
   const onSubmit = (value: string) => {
     if (value) {
       getSearchData({ params: { query: value } });
+      setSearchValue(value);
       setShowResult(true);
     } else {
       setShowResult(false);
@@ -44,6 +49,7 @@ function App() {
         <NoResult />
       );
     }
+    // return null;
     return <ErrorMessage error={error} />;
 
     //Below is mock data for testing purpose only
@@ -58,6 +64,14 @@ function App() {
     // ];
     // return <DataContainer data={mockData} />;
   }, [data, loading, error]);
+
+  useEffect(() => {
+    console.log(errorTime.current);
+    if (error && errorTime.current <= 1) {
+      errorTime.current++;
+      getSearchData({ params: { query: searchValue } });
+    }
+  }, [error]);
 
   useEffect(() => {
     renderResultArea();
